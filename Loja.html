@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head><title>Jesuis Vende e Você Compra por mixaria</title></head>
+<body>
+	<script type="text/javascript">
+
+	function menu(){
+		switch(parseInt(prompt("1- Cadastrar produto \n"+
+			"2- Comprar produto \n"+
+			"3- Vender produto \n"+
+			"4- Relatórios \n"+
+			"0- SAIR",""))){
+
+			case 1: cadastrarProduto()
+					verificaProdutos()
+					menu()
+					break;
+			case 2: comprarProduto()
+					logEstoque()
+					menu()
+					break; 
+			case 3: venderProduto()
+					logEstoque()
+					menu()
+					break;
+			case 4: menuRelatorios()
+			        menu()
+			case 0: break; 
+		};
+    }
+
+    function menuRelatorios () {
+    	switch(parseInt(prompt("Relatórios\n"+
+				"1- Venda\n"+
+				"2- Compra\n"+
+				"3- Produtos\n"+
+				"0- Menu Principal",""))){
+				case 1: relatorioVendas()
+						break;
+				case 2: relatorioCompras()
+						break;
+				case 3: relatorioProdutos()
+						break;
+				case 0: menu()
+						break;
+			}
+    }
+
+    function relatorioVendas(){
+    	var resultado = "";
+    	for (var i = vendas.length - 1; i >= 0; i--) {
+    		var venda = vendas[i];
+    		resultado = resultado+
+    		"\nVendedor: "+venda.vendedor+
+			"\nCodigo: "+venda.produtoId+
+			"\nProduto: "+venda.produtoNome+
+			"\nQuantidade: "+venda.produtoQuantidade+
+			"\nTotal da venda: "+venda.totalVenda+
+			"\n..............................";    		
+    	};
+    	alert(resultado);
+    }
+
+        function relatorioCompras(){
+        	var resultado = "";
+    	for (var i = compras.length - 1; i >= 0; i--) {
+    		var compra = compras[i];
+    		resultado = resultado+
+    		"\nVendedor: "+compra.fornecedor+
+			"\nCliente: "+compra.cliente+
+			"\nCodigo: "+compra.produtoId+
+			"\nProduto: "+compra.produtoNome+
+			"\nQuantidade: "+compra.produtoQuantidade+
+			"\nTotal da venda: "+compra.totalCompra+
+			"\n..............................";    		
+    	};
+    	alert(resultado);
+    }
+
+    function relatorioProdutos(){
+    	var resultado = "";
+	for (var i = produtos.length - 1; i >= 0; i--) {
+    		var produto = produtos[i];
+    		resultado = resultado+
+    		"\nCodigo: "+produto.codigo+
+			"\nNome: "+produto.nome+
+			"\nPreço: "+produto.preco+
+			"\nQuantidade: "+produto.quantidade+
+			"\n..............................";    		
+    	};
+    	alert(resultado);
+    }
+
+    
+    function verificaProdutos(){
+    	console.log("INICIO DA VALIDAÇÃO:\n");
+    	for (var i = 0; i <= produtos.length - 1; i++) {
+    		console.log("Codigo: "+produtos[i].codigo+
+    			"\nNome: "+produtos[i].nome+
+    			"\nPreço: "+produtos[i].preco+
+    			"\n");
+    	};
+    	console.log("FIM DA VALIDAÇÃO:");
+    }
+    function listarProdutos(){
+    	var resultado = "";
+    	for (var i = 0; i <= produtos.length - 1; i++) {
+    		resultado = resultado+"\nCodigo: "+produtos[i].codigo+
+	    				"\n Nome:"+produtos[i].nome+
+	    				"\n Quantidade:"+produtos[i].quantidade+
+	    				"\n......................................";
+    	};
+   		return resultado;
+    }
+	function cadastrarProduto () {
+			var produto = {
+			nome: String(prompt("Nome do produto:","")),
+			preco: parseFloat(prompt("Valor do produto:","")),
+			codigo: parseInt(prompt("Codigo do produto:","")),
+			quantidade: 0
+			};
+		produtos.push(produto);
+	}
+	function logEstoque(){
+		console.log("INICIO DA VALIDAÇÃO\n");
+		for (var i = produtos.length - 1; i >= 0; i--) {
+			console.log("Codigo : "+produtos[i].codigo+
+						"\nNome : "+produtos[i].nome+
+						"\nQuantidade : "+produtos[i].quantidade+"\n");
+		};
+		console.log("FIM DA VALIDAÇÃO");
+	}
+	function comprarProduto() {
+		var id = 0;
+		var quantidade = -1;
+		var fornece = String(prompt("Fornecedor: ",""));
+		var codigo = parseInt(prompt("Qual o codigo do produto que deseja comprar?\n"+listarProdutos(),""));
+		var valor = parseFloat(prompt("valor do produto: ",""));
+		for (var i = produtos.length - 1; i >= 0; i--) {
+			if (produtos[i].codigo == codigo){
+				var id = i;
+				quantidade = parseInt(prompt("Quantas unidades deseja comprar?",""));
+				produtos[id].quantidade = produtos[id].quantidade + quantidade;
+			}			
+		};
+		if (quantidade == -1) {
+			alert("Codigo do produto não encontrado!!!");
+			return null;
+		};
+		var compra = {
+			fornecedor: fornece,
+			produtoId: produtos[id].codigo,
+			produtoNome: produtos[id].nome,
+			produtoQuantidade: quantidade,
+			totalCompra: quantidade*valor,
+		}
+		compras.push(compra);
+	}
+
+	function venderProduto() {
+		var id = 0;
+		var quantidade = -1;
+		var vend = String(prompt("Nome do vendedor: ",""));
+		var cli = String(prompt("Nome do cliente: ",""));
+		var codigo = parseInt(prompt("Qual o codigo do produto que deseja vender?\n"+listarProdutos(),""));
+		for (var i = produtos.length - 1; i >= 0; i--) {
+			if (produtos[i].codigo == codigo){
+				var id = i;
+				quantidade = parseInt(prompt("Quantas unidades deseja vender?",""));
+				produtos[id].quantidade = produtos[id].quantidade - quantidade;
+			}			
+		};
+		if (quantidade == -1) {
+			alert("Codigo do produto não encontrado!!!");
+			return null;
+		};
+		var venda = {
+			vendedor: vend,
+			cliente: cli,
+			produtoId: produtos[id].codigo,
+			produtoNome: produtos[id].nome,
+			produtoQuantidade: quantidade,
+			totalVenda: quantidade*produtos[id].preco,
+		}
+		vendas.push(venda);
+
+	}
+	produtos = [];
+	vendas = [];
+	compras = [];
+	menu();
+
+
+
+	</script>
+</body>
+</html>
